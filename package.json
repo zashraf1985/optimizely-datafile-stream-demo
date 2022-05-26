@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/zashraf1985/optimizely-datafile-stream-demo#readme",
   "dependencies": {
-    "@optimizely/optimizely-sdk": "file:./javascript-sdk/packages/optimizely-sdk"
+    "@optimizely/optimizely-sdk": "file:./javascript-sdk/packages/optimizely-sdk",
+    "ably": "^1.2.22"
   },
   "devDependencies": {
     "serve": "^13.0.2",
