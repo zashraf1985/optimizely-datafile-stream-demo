@@ -2,7 +2,7 @@ import {createInstance} from '@optimizely/optimizely-sdk';
 import Ably from "ably/callbacks";
 
 const optimizely = createInstance({
-    sdkKey: '41W6e8Z6JgB87DKE8Ych8',
+    sdkKey: 'Vro3NpoQyjkv7jQAaQeH8',
     enableRealtimeUpdateNotification: true,
     enableStreaming: false,
 });
@@ -17,16 +17,34 @@ const realtime = new Ably.Realtime('8bjSyw.MGAWTA:upb01Uzp9GcHmP0Y01QCvpbZUZl3GQ
 const channel = realtime.channels.get("21468570738_development");
 
 document.addEventListener("readystatechange", readyEvent => {
-    const { readyState } = readyEvent.target as Document;
+    const {readyState} = readyEvent.target as Document;
     if (readyState !== 'complete') {
         return;
     }
 
-    const sendPushButton = document.getElementById("send-push-button");
-    sendPushButton.addEventListener("click", clickEvent => {
+    const sendMockNotificationButton = document.getElementById("send-mock-notification");
+    const sendMockDiffStreamButton = document.getElementById("send-mock-diff-stream");
+
+    const mockNotificationDataViaAbly = {"any": "notification data", "doesn't": "matter really"};
+    sendMockNotificationButton.addEventListener("click", clickEvent => {
         clickEvent.preventDefault();
-        console.log("Clicked manual push button on client.");
-        channel.publish("datafile-updated", {"datafile": "{JSON String Here}"});
+        channel.publish("datafile-updated", mockNotificationDataViaAbly);
+    });
+
+    const mockJsonPatchViaAbly = [
+        {
+            "op": "replace",
+            "path": "/rollouts/6481581326/experiments/6476790042/trafficAllocation",
+            "value": [{"entityId": "6505170634", "endOfRange": 4600}]
+        }, {
+            "op": "replace",
+            "path": "/rollouts/6481581326/experiments/6476790042/trafficAllocation",
+            "value": [{"entityId": "6505170634", "endOfRange": 4600}]
+        }
+    ];
+    sendMockDiffStreamButton.addEventListener("click", clickEvent => {
+        clickEvent.preventDefault();
+        channel.publish("datafile-updated", mockJsonPatchViaAbly);
     });
 });
 
