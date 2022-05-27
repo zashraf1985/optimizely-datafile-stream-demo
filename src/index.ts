@@ -1,11 +1,16 @@
 import {createInstance} from '@optimizely/optimizely-sdk';
 import Ably from "ably/callbacks";
+import {RealtimeDatafileManagerConfig} from "../javascript-sdk/packages/datafile-manager/lib/datafileManager";
 
-const optimizely = createInstance({
-    sdkKey: 'Vro3NpoQyjkv7jQAaQeH8',
-    enableRealtimeUpdateNotification: true,
-    enableStreaming: false,
-});
+const config: RealtimeDatafileManagerConfig = {
+    sdkKey: 'Vro3NpoQyjkv7jQAaQeH8', // TODO: Need SDK Key from Santiago
+    enableRealtimeUpdateNotification: false,
+    enableStreaming: true,
+    // datafileOptions: {
+    //     urlTemplate: 'https://optimizely-staging.s3.amazonaws.com/datafiles/%s.json',
+    // }
+}
+const optimizely = createInstance(config);
 
 optimizely?.onReady().then((d) => {
     document.getElementById("flag1").innerHTML = "flag1";
