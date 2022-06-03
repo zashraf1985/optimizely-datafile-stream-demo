@@ -10,34 +10,31 @@ const optimizely = createInstance({
 });
 
 const updateHeroTitle = (decision: OptimizelyDecision): void => {
-    const title  = decision.variables[decision.variationKey];
-    document.getElementsByTagName("h1").textContent = title;
+    const title  = decision.variables[decision.variationKey] as string;
+    if (title === undefined) {
+        return;
+    }
+    document.getElementById("hero-title").textContent = title;
 }
 
 const updateHeroImage = (decision: OptimizelyDecision): void => {
-    const imageUrl  = decision.variables[decision.variationKey];
-    document.getElementsByClassName("hero-container").style.backgroundImage = `url('${imageUrl}')`;
+    const imageUrl  = decision.variables[decision.variationKey] as string;
+    if (imageUrl === undefined) {
+        return;
+    }
+    document.getElementById("hero-container").style.backgroundImage = `url('${imageUrl}')`;
 }
 
 optimizely?.onReady().then(() => {
-    const HERO_TITLE_EXPERIMENT = 'hero_title';
-    const HERO_IMAGE_EXPERIMENT = 'hero_image';
-
     const userContext: OptimizelyUserContext = optimizely.createUserContext('user-673e7c9d-2b2a-49e3-9faf-9d7216ecd1fe');
 
-    const heroTitleDecision = userContext.decide(HERO_TITLE_EXPERIMENT);
-    updateHeroTitle(heroTitleDecision);
-
-    const heroImageDecision = userContext.decide(HERO_IMAGE_EXPERIMENT);
-    updateHeroImage(heroImageDecision);
-
-    userContext.subscribeToFlag(HERO_TITLE_EXPERIMENT, (decision: OptimizelyDecision)=>{
-        console.log('Hero 🎉 title updated.');
+    userContext.subscribeToFlag('hero_title', (decision: OptimizelyDecision)=>{
+        console.log('Hero 🎉 title updated FROM subscribeToFlag().');
         console.dir(decision);
         updateHeroTitle(decision);
     });
-    userContext.subscribeToFlag(HERO_IMAGE_EXPERIMENT, (decision: OptimizelyDecision)=>{
-        console.log('Hero 🖼️ image updated.');
+    userContext.subscribeToFlag('hero_image', (decision: OptimizelyDecision)=>{
+        console.log('Hero 🖼️ image updated FROM subscribeToFlag().');
         console.dir(decision);
         updateHeroImage(decision);
     });
